@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="ipv6_modbus_opcua_server" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="edit_cache">
+         <Option working_dir="/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ipv6_modbus_opcua_server">
+         <Option output="/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/ipv6_modbus_opcua_server" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/5" />
+            <Add directory="/usr/include/c++/5/backward" />
+            <Add directory="/usr/include/i386-linux-gnu" />
+            <Add directory="/usr/include/i386-linux-gnu/c++/5" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/5/include" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/5/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 ipv6_modbus_opcua_server" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ipv6_modbus_opcua_server/fast">
+         <Option output="/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/ipv6_modbus_opcua_server" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/5" />
+            <Add directory="/usr/include/c++/5/backward" />
+            <Add directory="/usr/include/i386-linux-gnu" />
+            <Add directory="/usr/include/i386-linux-gnu/c++/5" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/5/include" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/5/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 ipv6_modbus_opcua_server/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/champer/Desktop/ipv6_modbus_opcua_server/ipv6_modbus_opcua_server.c">
+         <Option target="ipv6_modbus_opcua_server"/>
+      </Unit>
+      <Unit filename="/home/champer/Desktop/ipv6_modbus_opcua_server/modbus_data.h">
+         <Option target="ipv6_modbus_opcua_server"/>
+      </Unit>
+      <Unit filename="/home/champer/Desktop/ipv6_modbus_opcua_server/open62541.c">
+         <Option target="ipv6_modbus_opcua_server"/>
+      </Unit>
+      <Unit filename="/home/champer/Desktop/ipv6_modbus_opcua_server/open62541.h">
+         <Option target="ipv6_modbus_opcua_server"/>
+      </Unit>
+      <Unit filename="/home/champer/Desktop/ipv6_modbus_opcua_server/socket.c">
+         <Option target="ipv6_modbus_opcua_server"/>
+      </Unit>
+      <Unit filename="/home/champer/Desktop/ipv6_modbus_opcua_server/socket.h">
+         <Option target="ipv6_modbus_opcua_server"/>
+      </Unit>
+      <Unit filename="/home/champer/Desktop/ipv6_modbus_opcua_server/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

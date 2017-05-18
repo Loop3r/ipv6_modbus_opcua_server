@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/ipv6_modbus_opcua_server.dir/ipv6_modbus_opcua_server.c.o CMakeFiles/ipv6_modbus_opcua_server.dir/socket.c.o CMakeFiles/ipv6_modbus_opcua_server.dir/open62541.c.o  -o ipv6_modbus_opcua_server -lmodbus -lpthread 

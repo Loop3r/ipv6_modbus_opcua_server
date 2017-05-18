@@ -1,0 +1,4 @@
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/champer/Desktop/ipv6_modbus_opcua_server
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug

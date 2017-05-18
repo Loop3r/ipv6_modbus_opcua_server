@@ -1,0 +1,3 @@
+/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/champer/Desktop/ipv6_modbus_opcua_server/cmake-build-debug/CMakeFiles/ipv6_modbus_opcua_server.dir
