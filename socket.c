@@ -212,7 +212,6 @@ void *IPv6_Client(void *arg)
             //sleep(1);
         }
     }
-
 }
 
 int Parse_IPv6_Resp(uint8_t *buf)
@@ -247,11 +246,17 @@ int Parse_IPv6_Resp(uint8_t *buf)
         }
         if(Get_Data_Type(buf) == DIANBIAO)
         {
-            printf("get node%02x DIANBIAO data:%04x, %f.6, %f.6, %f.6, %f.6\n",
-                   buf[4], (float)((buf[7]<<24) + (buf[8]<<16) + (buf[9]<<8) + buf[10]),
-                           (buf[11]<<24)+ (buf[12]<<16)+ (buf[13]<<8)+ buf[14],
-                           (buf[15]<<24)+ (buf[16]<<16)+ (buf[17]<<8)+ buf[18],
-                           (buf[19]<<24)+ (buf[20]<<16)+ (buf[21]<<8)+ buf[22]);
+            printf("get node%02x DIANBIAO data:%f.6x, %f.6, %f.6, %f.6, %f.6\n", buf[4],
+                   (float)( (buf[7]<<24) + (buf[8]<<16) + (buf[9]<<8) + buf[10] ),
+                   (float)( (buf[11]<<24)+ (buf[12]<<16)+ (buf[13]<<8)+ buf[14] ),
+                   (float)( (buf[15]<<24)+ (buf[16]<<16)+ (buf[17]<<8)+ buf[18] ),
+                   (float)( (buf[19]<<24)+ (buf[20]<<16)+ (buf[21]<<8)+ buf[22] ),
+                   (float)( (buf[23]<<24)+ (buf[24]<<16)+ (buf[25]<<8)+ buf[26] ) );
+            UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
+            UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
+            for(int i=0; i<5; i++){
+                UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2 + i] = (uint16_t)((buf[7+i]<<8)+buf[8+i]);   //data
+            }
             Opcua_Server_Parse(buf);
         }
         if(Get_Data_Type(buf) == FLOW)
