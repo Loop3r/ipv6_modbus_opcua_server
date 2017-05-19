@@ -9,14 +9,10 @@
 #include <pthread.h>
 #include "socket.h"
 
-
-
 pthread_t modbus_server_thread;	
 pthread_t ipv6_client_thread;	
 pthread_t opcua_server_thread;
 pthread_t opcua_data_thread;
-
-
 
 
 int main(int argc, char*argv[])

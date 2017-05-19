@@ -53,7 +53,8 @@ uint8_t Get_Data_Type(uint8_t *data);
 
 void *Opcua_Server(void * arg);
 void *Opcua_Server_Write(void * arg);
-void  Change_Server_Value(UA_Server *server, UA_NodeId node,UA_UInt16 value);
+void  Change_Server_IntValue(UA_Server *server, UA_NodeId node,UA_UInt16 value);
+void  Change_Server_FloatValue(UA_Server *server, UA_NodeId node,UA_Float value);
 void  Opcua_Server_Parse(UA_Byte *opcuabuf);
 void  Opcua_Server_AddNode(UA_Byte *nodebuf);
 
