@@ -22,7 +22,7 @@
 #include <signal.h>
 
 
-#include <modbus.h>
+#include <modbus/modbus.h>
 #include "open62541.h"
 
 #define IOT_DAEMON_PORT     5222
