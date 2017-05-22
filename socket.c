@@ -35,6 +35,8 @@ typedef struct{
 }Opcua_DB_DataBuf;
 Opcua_DB_DataBuf opcuadbdatabuf;
 
+float DIANBIAO_data[5] = {0.0};
+
 void close_sigint(int dummy)
 {
     if (server_socket != -1) {
@@ -53,19 +55,16 @@ void swap(uint8_t *a, uint8_t *b){
     *b = temp;
 }
 
-float* Hex_to_Float(uint8_t *buf){
+void Hex_to_Float(uint8_t *buf){
     int a[5] = {0};
-    float *tempf;
-    tempf=(float*)malloc(sizeof(float) * 5);
     for(int i=0; i<5; i++){
         swap(&buf[7+i*4], &buf[9+i*4]);
         swap(&buf[8+i*4], &buf[10+i*4]);
     }
     for(int i=0; i<5; i++){
         a[i] = (buf[7+i*4]<<24) + (buf[8+i*4]<<16) + (buf[9+i*4]<<8) + buf[10+i*4];
-        tempf[i] = *(float*)&a[i];
+        DIANBIAO_data[i] = *(float*)&a[i];
     }
-    return tempf;
 }
 
 void *Modbus_Server(void *arg)
@@ -249,8 +248,6 @@ void *IPv6_Client(void *arg)
 
 int Parse_IPv6_Resp(uint8_t *buf)
 {
-    float *tempf;
-
     if(buf[0] == 0xA1 && buf[1] == 0xA2 && buf[2] == 0x00 && buf[3] == 0xAA)
     {
 
@@ -280,9 +277,9 @@ int Parse_IPv6_Resp(uint8_t *buf)
         }
         if(Get_Data_Type(buf) == DIANBIAO)
         {
-            tempf = Hex_to_Float(&buf[0]);
+            Hex_to_Float(&buf[0]);
             printf("get node%d DIANBIAO data:%.6f, %.6f, %.6f, %.6f, %.6f\n", buf[4],
-                   *tempf, *(tempf+1),  *(tempf+2),  *(tempf+3),  *(tempf+4));
+                   DIANBIAO_data[0], DIANBIAO_data[1],  DIANBIAO_data[2],  DIANBIAO_data[3],  DIANBIAO_data[4]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
             for(int i=0; i<5; i++){
