@@ -46,6 +46,28 @@ void close_sigint(int dummy)
     exit(dummy);
 }
 
+void swap(uint8_t *a, uint8_t *b){
+    uint8_t temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+float* Hex_to_Float(uint8_t *buf){
+    int a[5] = {0};
+    float *tempf;
+    tempf=(float*)malloc(sizeof(float) * 5);
+    for(int i=0; i<5; i++){
+        swap(&buf[7+i*4], &buf[9+i*4]);
+        swap(&buf[8+i*4], &buf[10+i*4]);
+    }
+    for(int i=0; i<5; i++){
+        a[i] = (buf[7+i*4]<<24) + (buf[8+i*4]<<16) + (buf[9+i*4]<<8) + buf[10+i*4];
+        tempf[i] = *(float*)&a[i];
+    }
+    return tempf;
+}
+
 void *Modbus_Server(void *arg)
 {
     uint8_t query[MODBUS_TCP_MAX_ADU_LENGTH];
@@ -227,13 +249,14 @@ void *IPv6_Client(void *arg)
 
 int Parse_IPv6_Resp(uint8_t *buf)
 {
+    float *tempf;
 
     if(buf[0] == 0xA1 && buf[1] == 0xA2 && buf[2] == 0x00 && buf[3] == 0xAA)
     {
 
         if(Get_Data_Type(buf) == CO)
         {
-            printf("get node%02x CO data:%04x\n", buf[4], (buf[7]<<8)+buf[8]);
+            printf("get node%d CO data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
@@ -241,7 +264,7 @@ int Parse_IPv6_Resp(uint8_t *buf)
         }
         if(Get_Data_Type(buf) == DUST)
         {
-            printf("get node%02x DUST data:%04x\n", buf[4], (buf[7]<<8)+buf[8]);
+            printf("get node%d DUST data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
@@ -249,7 +272,7 @@ int Parse_IPv6_Resp(uint8_t *buf)
         }
         if(Get_Data_Type(buf) == LIAOWEI)
         {
-            printf("get node%02x LIAOWEI data:%04x\n", buf[4], (buf[7]<<8)+buf[8]);
+            printf("get node%d LIAOWEI data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
@@ -257,12 +280,9 @@ int Parse_IPv6_Resp(uint8_t *buf)
         }
         if(Get_Data_Type(buf) == DIANBIAO)
         {
-            printf("get node%02x DIANBIAO data:%.6f, %.6f, %.6f, %.6f, %.6f\n", buf[4],
-                   (float)( (buf[7]<<24) + (buf[8]<<16) + (buf[9]<<8) + buf[10] ),
-                   (float)( (buf[11]<<24)+ (buf[12]<<16)+ (buf[13]<<8)+ buf[14] ),
-                   (float)( (buf[15]<<24)+ (buf[16]<<16)+ (buf[17]<<8)+ buf[18] ),
-                   (float)( (buf[19]<<24)+ (buf[20]<<16)+ (buf[21]<<8)+ buf[22] ),
-                   (float)( (buf[23]<<24)+ (buf[24]<<16)+ (buf[25]<<8)+ buf[26] ) );
+            tempf = Hex_to_Float(&buf[0]);
+            printf("get node%d DIANBIAO data:%.6f, %.6f, %.6f, %.6f, %.6f\n", buf[4],
+                   *tempf, *(tempf+1),  *(tempf+2),  *(tempf+3),  *(tempf+4));
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
             for(int i=0; i<5; i++){
@@ -272,7 +292,7 @@ int Parse_IPv6_Resp(uint8_t *buf)
         }
         if(Get_Data_Type(buf) == FLOW)
         {
-            printf("get node%02x FLOW data:%04x\n", buf[4], (buf[7]<<8)+buf[8]);
+            printf("get node%d FLOW data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
@@ -280,10 +300,12 @@ int Parse_IPv6_Resp(uint8_t *buf)
         }
         if(Get_Data_Type(buf) == ENCODER)
         {
-            printf("get node%02x ENCODER data:%04x\n", buf[4], (buf[7]<<8)+buf[8]);
+            printf("get node%02x ENCODER direction:%d,sign:%d,data:%d\n", buf[4], buf[7], buf[8], (buf[9]<<8)+buf[10]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
-            UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
+            UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)(buf[7]);
+            UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 3] = (uint16_t)(buf[8]);
+            UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 4] = (uint16_t)((buf[9]<<8)+buf[10]);
             Opcua_Server_Parse(buf);
         }
     }
@@ -714,7 +736,7 @@ void *Opcua_Server_Write(void * arg)
         }
 
         for (int i = 0; i < opcuadatabuf.length; i++)
-            Change_Server_FloatValue(server, UA_NODEID_NUMERIC(1, opcuadatabuf.data[i].addr), opcuadatabuf.data[i].data);
+            Change_Server_IntValue(server, UA_NODEID_NUMERIC(1, opcuadatabuf.data[i].addr), opcuadatabuf.data[i].data);
         sleep(2);
     }
 }

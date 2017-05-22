@@ -46,6 +46,8 @@
 
 
 void close_sigint(int dummy);
+void swap(uint8_t *a, uint8_t *b);
+float* Hex_to_Float(uint8_t *buf);
 void *Modbus_Server(void *arg);
 void *IPv6_Client(void *arg);
 int Parse_IPv6_Resp(uint8_t *buf);
