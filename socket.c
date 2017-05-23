@@ -326,45 +326,30 @@ void  Opcua_Server_Parse(UA_Byte *opcuabuf)
     if((opcuadbdatabuf.length==0)&&(opcuabuf[5]==DIANBIAO)){
         opcuadbdatabuf.data[0].addr = opcuabuf[4];
         opcuadbdatabuf.data[0].type=opcuabuf[5];
-        opcuadbdatabuf.data[0].data[0]=(float)( (opcuabuf[7]<<24) + (opcuabuf[8]<<16) + (opcuabuf[9]<<8) + opcuabuf[10] );
-        opcuadbdatabuf.data[0].data[1]=(float)( (opcuabuf[11]<<24) + (opcuabuf[12]<<16) + (opcuabuf[13]<<8) + opcuabuf[14] );
-        opcuadbdatabuf.data[0].data[2]=(float)( (opcuabuf[15]<<24) + (opcuabuf[16]<<16) + (opcuabuf[17]<<8) + opcuabuf[18] );
-        opcuadbdatabuf.data[0].data[3]=(float)( (opcuabuf[19]<<24) + (opcuabuf[20]<<16) + (opcuabuf[21]<<8) + opcuabuf[22] );
-        opcuadbdatabuf.data[0].data[4]=(float)( (opcuabuf[23]<<24) + (opcuabuf[24]<<16) + (opcuabuf[25]<<8) + opcuabuf[26] );
+        opcuadbdatabuf.data[0].data[0]=DIANBIAO_data[0];
+        opcuadbdatabuf.data[0].data[1]=DIANBIAO_data[1];
+        opcuadbdatabuf.data[0].data[2]=DIANBIAO_data[2];
+        opcuadbdatabuf.data[0].data[3]=DIANBIAO_data[3];
+        opcuadbdatabuf.data[0].data[4]=DIANBIAO_data[4];
         opcuadbdatabuf.length = opcuadbdatabuf.length + 1;
         Opcua_Server_AddNode(opcuabuf);
     }
     else if(opcuabuf[5]==DIANBIAO){
         for (int i = 0; i < opcuadbdatabuf.length; i++) {
             if ((opcuadbdatabuf.data[i].addr == opcuabuf[4]) && (opcuadbdatabuf.data[i].type == opcuabuf[5])) {
-                opcuadbdatabuf.data[0].data[0] = (float) ((opcuabuf[7] << 24) + (opcuabuf[8] << 16) +
-                                                          (opcuabuf[9] << 8) + opcuabuf[10]);
-                opcuadbdatabuf.data[0].data[1] = (float) ((opcuabuf[11] << 24) + (opcuabuf[12] << 16) +
-                                                          (opcuabuf[13] << 8) + opcuabuf[14]);
-                opcuadbdatabuf.data[0].data[2] = (float) ((opcuabuf[15] << 24) + (opcuabuf[16] << 16) +
-                                                          (opcuabuf[17] << 8) + opcuabuf[18]);
-                opcuadbdatabuf.data[0].data[3] = (float) ((opcuabuf[19] << 24) + (opcuabuf[20] << 16) +
-                                                          (opcuabuf[21] << 8) + opcuabuf[22]);
-                opcuadbdatabuf.data[0].data[4] = (float) ((opcuabuf[23] << 24) + (opcuabuf[24] << 16) +
-                                                          (opcuabuf[25] << 8) + opcuabuf[26]);
+                opcuadbdatabuf.data[i].data[0] = DIANBIAO_data[0];
+                opcuadbdatabuf.data[i].data[1] = DIANBIAO_data[1];
+                opcuadbdatabuf.data[i].data[2] = DIANBIAO_data[2];
+                opcuadbdatabuf.data[i].data[3] = DIANBIAO_data[3];
+                opcuadbdatabuf.data[i].data[4] = DIANBIAO_data[4];
             } else if (i == opcuadbdatabuf.length - 1) {
                 opcuadbdatabuf.data[opcuadbdatabuf.length].addr = opcuabuf[4];
                 opcuadbdatabuf.data[opcuadbdatabuf.length].type = opcuabuf[5];
-                opcuadbdatabuf.data[opcuadbdatabuf.length].data[0] = (float) ((opcuabuf[7] << 24) +
-                                                                              (opcuabuf[8] << 16) + (opcuabuf[9] << 8) +
-                                                                              opcuabuf[10]);
-                opcuadbdatabuf.data[opcuadbdatabuf.length].data[1] = (float) ((opcuabuf[11] << 24) +
-                                                                              (opcuabuf[12] << 16) +
-                                                                              (opcuabuf[13] << 8) + opcuabuf[14]);
-                opcuadbdatabuf.data[opcuadbdatabuf.length].data[2] = (float) ((opcuabuf[15] << 24) +
-                                                                              (opcuabuf[16] << 16) +
-                                                                              (opcuabuf[17] << 8) + opcuabuf[18]);
-                opcuadbdatabuf.data[opcuadbdatabuf.length].data[3] = (float) ((opcuabuf[19] << 24) +
-                                                                              (opcuabuf[20] << 16) +
-                                                                              (opcuabuf[21] << 8) + opcuabuf[22]);
-                opcuadbdatabuf.data[opcuadbdatabuf.length].data[4] = (float) ((opcuabuf[23] << 24) +
-                                                                              (opcuabuf[24] << 16) +
-                                                                              (opcuabuf[25] << 8) + opcuabuf[26]);
+                opcuadbdatabuf.data[opcuadbdatabuf.length].data[0] = DIANBIAO_data[0];
+                opcuadbdatabuf.data[opcuadbdatabuf.length].data[1] = DIANBIAO_data[1];
+                opcuadbdatabuf.data[opcuadbdatabuf.length].data[2] = DIANBIAO_data[2];
+                opcuadbdatabuf.data[opcuadbdatabuf.length].data[3] = DIANBIAO_data[3];
+                opcuadbdatabuf.data[opcuadbdatabuf.length].data[4] = DIANBIAO_data[4];
                 opcuadbdatabuf.length = opcuadbdatabuf.length + 1;
                 Opcua_Server_AddNode(opcuabuf);
             }else{}
@@ -374,20 +359,28 @@ void  Opcua_Server_Parse(UA_Byte *opcuabuf)
     if((opcuadatabuf.length == 0)&&(opcuabuf[5]!=DIANBIAO)){
         opcuadatabuf.data[0].addr = opcuabuf[4];
         opcuadatabuf.data[0].type = opcuabuf[5];
-        opcuadatabuf.data[0].data = (opcuabuf[7]<<8) + opcuabuf[8];
+        if(opcuabuf[5]==ENCODER)
+            opcuadatabuf.data[0].data = (opcuabuf[9]<<8) + opcuabuf[10];
+        else
+            opcuadatabuf.data[0].data = (opcuabuf[7]<<8) + opcuabuf[8];
         opcuadatabuf.length = opcuadatabuf.length + 1;
         Opcua_Server_AddNode(opcuabuf);
     }
     else{
         for(int i=0;i<opcuadatabuf.length;i++){
             if((opcuadatabuf.data[i].addr == opcuabuf[4])&&(opcuadatabuf.data[i].type== opcuabuf[5])){
-                printf("get the node of addr is %d and the type is %d\n",opcuabuf[4],opcuabuf[5]);
-                opcuadatabuf.data[i].data = (opcuabuf[7]<<8) + opcuabuf[8];
+                if(opcuabuf[5]==ENCODER)
+                    opcuadatabuf.data[i].data = (opcuabuf[9]<<8) + opcuabuf[10];
+                else
+                    opcuadatabuf.data[i].data = (opcuabuf[7]<<8) + opcuabuf[8];
             }
             else if(i==opcuadatabuf.length -1 ){
                 opcuadatabuf.data[opcuadatabuf.length].addr = opcuabuf[4];
                 opcuadatabuf.data[opcuadatabuf.length].type = opcuabuf[5];
-                opcuadatabuf.data[opcuadatabuf.length].data = (opcuabuf[7]<<8) + opcuabuf[8];
+                if(opcuabuf[5]==ENCODER)
+                    opcuadatabuf.data[opcuadatabuf.length].data = (opcuabuf[9]<<8) + opcuabuf[10];
+                else
+                    opcuadatabuf.data[opcuadatabuf.length].data = (opcuabuf[7]<<8) + opcuabuf[8];
                 opcuadatabuf.length = opcuadatabuf.length + 1;
                 Opcua_Server_AddNode(opcuabuf);
             }else{}
@@ -649,7 +642,7 @@ void  Change_Server_IntValue(UA_Server *server, UA_NodeId node,UA_UInt16 value)
     writevalue.type = &UA_TYPES[UA_TYPES_UINT16];
     writevalue.storageType = UA_VARIANT_DATA;
     retval=UA_Server_writeValue(server,node,writevalue);
-    printf("write %s retval %x\n",node.identifier.string.data,retval);
+    //printf("write %s retval %x\n",node.identifier.string.data,retval);
 }
 void  Change_Server_FloatValue(UA_Server *server, UA_NodeId node,UA_Float value)
 {
@@ -659,7 +652,7 @@ void  Change_Server_FloatValue(UA_Server *server, UA_NodeId node,UA_Float value)
     writevalue.type = &UA_TYPES[UA_TYPES_FLOAT];
     writevalue.storageType = UA_VARIANT_DATA;
     retval=UA_Server_writeValue(server,node,writevalue);
-    printf("write %s retval %x\n",node.identifier.string.data,retval);
+    //printf("write %s retval %x\n",node.identifier.string.data,retval);
 }
 
 void *Opcua_Server(void * arg)
