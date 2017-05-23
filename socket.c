@@ -214,7 +214,7 @@ void *IPv6_Client(void *arg)
             if (-1 == send(IPv6_Client_SocketFd, IPv6_Req, 4, 0)) {
                 perror("ipv6 client write");
             }
-            int recvd = recv(IPv6_Client_SocketFd, &IPv6_Resp[0], IPV6_RESP_LEN, 0);
+            int recvd = recv(IPv6_Client_SocketFd, IPv6_Resp, IPV6_RESP_LEN, 0);
             if(recvd==-1&&errno==EAGAIN)
             {
                 printf("timeout\n");
@@ -222,7 +222,7 @@ void *IPv6_Client(void *arg)
             }
             else
             {
-                Parse_IPv6_Resp(&IPv6_Resp[0], recvd);
+                Parse_IPv6_Resp(IPv6_Resp, recvd);
             }
 
 #if 0
