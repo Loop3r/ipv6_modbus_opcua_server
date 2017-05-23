@@ -38,6 +38,14 @@
 #define FLOW     0x05
 #define ENCODER  0x06
 
+#define CO_PACKET_LEN       9
+#define DUST_PACKET_LEN     9
+#define LIAOWEI_PACKET_LEN  9
+#define DIANBIAO_PACKET_LEN 27
+#define FLOW_PACKET_LEN     9
+#define ENCODER_PACKET_LEN  11
+
+
 #define NB_CONNECTION        5
 #define IPV6_DEVICE_NUM      10
 #define IPV6_RESP_LEN        100
@@ -50,7 +58,7 @@ void swap(uint8_t *a, uint8_t *b);
 void Hex_to_Float(uint8_t *buf);
 void *Modbus_Server(void *arg);
 void *IPv6_Client(void *arg);
-int Parse_IPv6_Resp(uint8_t *buf);
+int Parse_IPv6_Resp(uint8_t *buf, int len);
 uint8_t Get_Data_Type(uint8_t *data);
 
 void *Opcua_Server(void * arg);
@@ -59,6 +67,10 @@ void  Change_Server_IntValue(UA_Server *server, UA_NodeId node,UA_UInt16 value);
 void  Change_Server_FloatValue(UA_Server *server, UA_NodeId node,UA_Float value);
 void  Opcua_Server_Parse(UA_Byte *opcuabuf);
 void  Opcua_Server_AddNode(UA_Byte *nodebuf);
-
-
+static UA_StatusCode readUIntDataSource(void *handle, const UA_NodeId nodeId, UA_Boolean sourceTimeStamp,
+                                        const UA_NumericRange *range, UA_DataValue *value) ;
+static UA_StatusCode readFloatDataSource(void *handle, const UA_NodeId nodeId, UA_Boolean sourceTimeStamp,
+                                         const UA_NumericRange *range, UA_DataValue *value) ;
+UA_UInt16 nodeidFindUintData(const UA_NodeId nodeId) ;
+UA_Float nodeidFindFloatData(const UA_NodeId nodeId) ;
 #endif //MODBUS_SERVER_SOCKET_H

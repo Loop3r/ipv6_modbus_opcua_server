@@ -4,6 +4,7 @@
 
 #include "socket.h"
 #include "modbus_data.h"
+#include "open62541.h"
 
 int server_socket = -1;
 int IPv6_Client_SocketFd = -1;
@@ -208,20 +209,20 @@ void *IPv6_Client(void *arg)
 
     while(1)
     {
-        for (int i = 0; i < IPV6_DEVICE_NUM; i++) {
+        for(int i=1; i<=IPV6_DEVICE_NUM; i++){
             IPv6_Req[3] = (uint8_t)i;
             if (-1 == send(IPv6_Client_SocketFd, IPv6_Req, 4, 0)) {
                 perror("ipv6 client write");
             }
-
             int recvd = recv(IPv6_Client_SocketFd, &IPv6_Resp[0], IPV6_RESP_LEN, 0);
             if(recvd==-1&&errno==EAGAIN)
             {
                 printf("timeout\n");
+                break;
             }
             else
             {
-                Parse_IPv6_Resp(&IPv6_Resp[0]);
+                Parse_IPv6_Resp(&IPv6_Resp[0], recvd);
             }
 
 #if 0
@@ -246,12 +247,12 @@ void *IPv6_Client(void *arg)
     }
 }
 
-int Parse_IPv6_Resp(uint8_t *buf)
+int Parse_IPv6_Resp(uint8_t *buf, int len)
 {
-    if(buf[0] == 0xA1 && buf[1] == 0xA2 && buf[2] == 0x00 && buf[3] == 0xAA)
+    if(buf[0] == 0xA1 && buf[1] == 0xA2 && buf[2] == 0x00 && buf[3] == 0xAA && buf[4] > 0 && buf[4] <=10)
     {
 
-        if(Get_Data_Type(buf) == CO)
+        if(Get_Data_Type(buf) == CO && len == CO_PACKET_LEN)
         {
             printf("get node%d CO data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
@@ -259,7 +260,7 @@ int Parse_IPv6_Resp(uint8_t *buf)
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
             Opcua_Server_Parse(buf);
         }
-        if(Get_Data_Type(buf) == DUST)
+        if(Get_Data_Type(buf) == DUST && len == DUST_PACKET_LEN)
         {
             printf("get node%d DUST data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
@@ -267,7 +268,7 @@ int Parse_IPv6_Resp(uint8_t *buf)
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
             Opcua_Server_Parse(buf);
         }
-        if(Get_Data_Type(buf) == LIAOWEI)
+        if(Get_Data_Type(buf) == LIAOWEI && len == LIAOWEI_PACKET_LEN)
         {
             printf("get node%d LIAOWEI data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
@@ -275,7 +276,7 @@ int Parse_IPv6_Resp(uint8_t *buf)
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
             Opcua_Server_Parse(buf);
         }
-        if(Get_Data_Type(buf) == DIANBIAO)
+        if(Get_Data_Type(buf) == DIANBIAO && len == DIANBIAO_PACKET_LEN)
         {
             Hex_to_Float(&buf[0]);
             printf("get node%d DIANBIAO data:%.6f, %.6f, %.6f, %.6f, %.6f\n", buf[4],
@@ -287,7 +288,7 @@ int Parse_IPv6_Resp(uint8_t *buf)
             }
             Opcua_Server_Parse(buf);
         }
-        if(Get_Data_Type(buf) == FLOW)
+        if(Get_Data_Type(buf) == FLOW && len == FLOW_PACKET_LEN)
         {
             printf("get node%d FLOW data:%d\n", buf[4], (buf[7]<<8)+buf[8]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
@@ -295,9 +296,9 @@ int Parse_IPv6_Resp(uint8_t *buf)
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)((buf[7]<<8)+buf[8]);   //data
             Opcua_Server_Parse(buf);
         }
-        if(Get_Data_Type(buf) == ENCODER)
+        if(Get_Data_Type(buf) == ENCODER && len == ENCODER_PACKET_LEN)
         {
-            printf("get node%02x ENCODER direction:%d,sign:%d,data:%d\n", buf[4], buf[7], buf[8], (buf[9]<<8)+buf[10]);
+            printf("get node%d ENCODER direction:%d,sign:%d,data:%d\n", buf[4], buf[7], buf[8], (buf[9]<<8)+buf[10]);
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD] = (uint16_t)buf[4];                     //addr
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 1] = (uint16_t)(buf[5]);               //type
             UT_INPUT_REGISTERS_TAB[REGISTER_WRITE_HEAD + 2] = (uint16_t)(buf[7]);
@@ -342,6 +343,7 @@ void  Opcua_Server_Parse(UA_Byte *opcuabuf)
                 opcuadbdatabuf.data[i].data[2] = DIANBIAO_data[2];
                 opcuadbdatabuf.data[i].data[3] = DIANBIAO_data[3];
                 opcuadbdatabuf.data[i].data[4] = DIANBIAO_data[4];
+                break;
             } else if (i == opcuadbdatabuf.length - 1) {
                 opcuadbdatabuf.data[opcuadbdatabuf.length].addr = opcuabuf[4];
                 opcuadbdatabuf.data[opcuadbdatabuf.length].type = opcuabuf[5];
@@ -373,6 +375,7 @@ void  Opcua_Server_Parse(UA_Byte *opcuabuf)
                     opcuadatabuf.data[i].data = (opcuabuf[9]<<8) + opcuabuf[10];
                 else
                     opcuadatabuf.data[i].data = (opcuabuf[7]<<8) + opcuabuf[8];
+                break;
             }
             else if(i==opcuadatabuf.length -1 ){
                 opcuadatabuf.data[opcuadatabuf.length].addr = opcuabuf[4];
@@ -385,14 +388,127 @@ void  Opcua_Server_Parse(UA_Byte *opcuabuf)
                 Opcua_Server_AddNode(opcuabuf);
             }else{}
         }
-
     }
 }
 
+UA_UInt16 nodeidFindUintData(const UA_NodeId nodeId)
+{
+    int i;
+    for(i=0;i<opcuadatabuf.length;i++) {
+        if(nodeId.identifier.numeric==opcuadatabuf.data[i].addr) {
+            return opcuadatabuf.data[i].data;
+        }
+    }
+    printf("not find:%d!\n",nodeId.identifier.numeric);
+    return 0;
+}
+
+UA_Float nodeidFindFloatData(const UA_NodeId nodeId)
+{
+
+    int i;
+    char nodeAP[20] = {0};          //ԃԚզԢ֧ҭޚ֣քnodeId
+    char *p=NULL;
+    for(i=0;i<opcuadbdatabuf.length;i++) {
+        strcat(nodeAP,"DIANBIAO_");
+        p = strstr(nodeAP,"DIANBIAO_");
+        if(p != NULL) {
+            sprintf(p,"DIANBIAO_%d",opcuadbdatabuf.data[i].addr);
+        }
+        strcat(nodeAP,"_APOWER");
+        if(strncmp((char*)nodeId.identifier.string.data, nodeAP, strlen(nodeAP)) == 0)
+            return opcuadbdatabuf.data[i].data[0];
+        memset(nodeAP, '\0', strlen(nodeAP));
+
+        strcat(nodeAP,"DIANBIAO_");
+        p = strstr(nodeAP,"DIANBIAO_");
+        if(p != NULL) {
+            sprintf(p,"DIANBIAO_%d",opcuadbdatabuf.data[i].addr);
+        }
+        strcat(nodeAP,"_RPOWER");
+        if(strncmp((char*)nodeId.identifier.string.data, nodeAP, strlen(nodeAP)) == 0)
+            return opcuadbdatabuf.data[i].data[1];
+        memset(nodeAP, '\0', strlen(nodeAP));
+
+        strcat(nodeAP,"DIANBIAO_");
+        p = strstr(nodeAP,"DIANBIAO_");
+        if(p != NULL) {
+            sprintf(p,"DIANBIAO_%d",opcuadbdatabuf.data[i].addr);
+        }
+        strcat(nodeAP,"_AU");
+        if(strncmp((char*)nodeId.identifier.string.data, nodeAP, strlen(nodeAP)) == 0)
+            return opcuadbdatabuf.data[i].data[2];
+        memset(nodeAP, '\0', strlen(nodeAP));
+
+        strcat(nodeAP,"DIANBIAO_");
+        p = strstr(nodeAP,"DIANBIAO_");
+        if(p != NULL) {
+            sprintf(p,"DIANBIAO_%d",opcuadbdatabuf.data[i].addr);
+        }
+        strcat(nodeAP,"_BU");
+        if(strncmp((char*)nodeId.identifier.string.data, nodeAP, strlen(nodeAP)) == 0)
+            return opcuadbdatabuf.data[i].data[3];
+        memset(nodeAP, '\0', strlen(nodeAP));
+
+        strcat(nodeAP,"DIANBIAO_");
+        p = strstr(nodeAP,"DIANBIAO_");
+        if(p != NULL) {
+            sprintf(p,"DIANBIAO_%d",opcuadbdatabuf.data[i].addr);
+        }
+        strcat(nodeAP,"_CU");
+        if(strncmp((char*)nodeId.identifier.string.data, nodeAP, strlen(nodeAP)) == 0)
+            return opcuadbdatabuf.data[i].data[4];
+        memset(nodeAP, '\0', strlen(nodeAP));
+    }
+    printf("not find:%s!\n",nodeId.identifier.string.data);
+    return 0;
+}
+static UA_StatusCode
+readUIntDataSource(void *handle, const UA_NodeId nodeId, UA_Boolean sourceTimeStamp,
+                   const UA_NumericRange *range, UA_DataValue *value) {
+    if(range) {
+        value->hasStatus = true;
+        value->status = UA_STATUSCODE_BADINDEXRANGEINVALID;
+        return UA_STATUSCODE_GOOD;
+    }
+    UA_UInt16 currentFloat;
+
+    if(nodeidFindUintData(nodeId) != 0)
+        currentFloat = nodeidFindUintData(nodeId);
+    else
+        currentFloat = 0;
+    value->sourceTimestamp = UA_DateTime_now();
+    value->hasSourceTimestamp = true;
+    UA_Variant_setScalarCopy(&value->value, &currentFloat, &UA_TYPES[UA_TYPES_UINT16]);
+    value->hasValue = true;
+    return UA_STATUSCODE_GOOD;
+}
+static UA_StatusCode
+readFloatDataSource(void *handle, const UA_NodeId nodeId, UA_Boolean sourceTimeStamp,
+                    const UA_NumericRange *range, UA_DataValue *value) {
+    if(range) {
+        value->hasStatus = true;
+        value->status = UA_STATUSCODE_BADINDEXRANGEINVALID;
+        return UA_STATUSCODE_GOOD;
+    }
+    UA_Float currentFloat;
+
+    if(nodeidFindFloatData(nodeId) != 0)
+        currentFloat = nodeidFindFloatData(nodeId);
+    else
+        currentFloat = 0;
+    value->sourceTimestamp = UA_DateTime_now();
+    value->hasSourceTimestamp = true;
+    UA_Variant_setScalarCopy(&value->value, &currentFloat, &UA_TYPES[UA_TYPES_FLOAT]);
+    value->hasValue = true;
+    return UA_STATUSCODE_GOOD;
+}
 void  Opcua_Server_AddNode(UA_Byte *nodebuf)
 {
     char nodeDisplayName[10] = {0};
     char *p=NULL;
+    UA_DataSource DataSource = (UA_DataSource) {.handle = NULL, .read = readUIntDataSource, .write = NULL};
+    UA_DataSource DbDataSource = (UA_DataSource) {.handle = NULL, .read = readFloatDataSource, .write = NULL};
     if(nodebuf[5]==CO){
         strcat(nodeDisplayName,"CO_");
         p = strstr(nodeDisplayName,"CO_");
@@ -413,8 +529,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         UA_QualifiedName cobrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, coNodeId, coparentNodeId, coparentReferenceNodeId,
-                                  cobrowseName, covariableType, coAttr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, coNodeId, coparentNodeId, coparentReferenceNodeId,
+                                  cobrowseName, covariableType, coAttr, DataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
     }
     else if(nodebuf[5]==DUST){
@@ -437,8 +553,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         UA_QualifiedName dtbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, dtNodeId, dtparentNodeId, dtparentReferenceNodeId,
-                                  dtbrowseName, dtvariableType, dtattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, dtNodeId, dtparentNodeId, dtparentReferenceNodeId,
+                                  dtbrowseName, dtvariableType, dtattr, DataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
     }
@@ -462,8 +578,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         UA_QualifiedName lwbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, lwNodeId, lwparentNodeId, lwparentReferenceNodeId,
-                                  lwbrowseName, lwvariableType, lwattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, lwNodeId, lwparentNodeId, lwparentReferenceNodeId,
+                                  lwbrowseName, lwvariableType, lwattr,DataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
     }
@@ -489,8 +605,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         UA_QualifiedName dbbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
-                                  dbbrowseName, dbvariableType, dbattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
+                                  dbbrowseName, dbvariableType, dbattr, DbDataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
         strcat(nodeDisplayName,"DIANBIAO_");
@@ -510,8 +626,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         dbbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
-                                  dbbrowseName, dbvariableType, dbattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
+                                  dbbrowseName, dbvariableType, dbattr, DbDataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
         strcat(nodeDisplayName,"DIANBIAO_");
@@ -531,8 +647,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         dbbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
-                                  dbbrowseName, dbvariableType, dbattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
+                                  dbbrowseName, dbvariableType, dbattr,DbDataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
         strcat(nodeDisplayName,"DIANBIAO_");
@@ -552,8 +668,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         dbbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
-                                  dbbrowseName, dbvariableType, dbattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
+                                  dbbrowseName, dbvariableType, dbattr, DbDataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
         strcat(nodeDisplayName,"DIANBIAO_");
@@ -573,8 +689,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         dbbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
-                                  dbbrowseName, dbvariableType, dbattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, dbNodeId, dbparentNodeId, dbparentReferenceNodeId,
+                                  dbbrowseName, dbvariableType, dbattr,DbDataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
     }
@@ -598,8 +714,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         UA_QualifiedName fwbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, fwNodeId, fwparentNodeId, fwparentReferenceNodeId,
-                                  fwbrowseName, fwvariableType, fwattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, fwNodeId, fwparentNodeId, fwparentReferenceNodeId,
+                                  fwbrowseName, fwvariableType, fwattr, DataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
 
     }
@@ -623,8 +739,8 @@ void  Opcua_Server_AddNode(UA_Byte *nodebuf)
         UA_QualifiedName enbrowseName = UA_QUALIFIEDNAME(1, nodeDisplayName);
 
         /* 3) add the variable */
-        UA_Server_addVariableNode(server, enNodeId,enparentNodeId, enparentReferenceNodeId,
-                                  enbrowseName, envariableType,enattr, NULL, NULL);
+        UA_Server_addDataSourceVariableNode(server, enNodeId,enparentNodeId, enparentReferenceNodeId,
+                                  enbrowseName, envariableType,enattr, DataSource, NULL);
         memset(nodeDisplayName, '\0', strlen(nodeDisplayName));
     }else {
 
@@ -642,7 +758,7 @@ void  Change_Server_IntValue(UA_Server *server, UA_NodeId node,UA_UInt16 value)
     writevalue.type = &UA_TYPES[UA_TYPES_UINT16];
     writevalue.storageType = UA_VARIANT_DATA;
     retval=UA_Server_writeValue(server,node,writevalue);
-    //printf("write %s retval %x\n",node.identifier.string.data,retval);
+    printf("write %s retval %x\n",node.identifier.string.data,retval);
 }
 void  Change_Server_FloatValue(UA_Server *server, UA_NodeId node,UA_Float value)
 {
@@ -652,7 +768,7 @@ void  Change_Server_FloatValue(UA_Server *server, UA_NodeId node,UA_Float value)
     writevalue.type = &UA_TYPES[UA_TYPES_FLOAT];
     writevalue.storageType = UA_VARIANT_DATA;
     retval=UA_Server_writeValue(server,node,writevalue);
-    //printf("write %s retval %x\n",node.identifier.string.data,retval);
+    printf("write %s retval %x\n",node.identifier.string.data,retval);
 }
 
 void *Opcua_Server(void * arg)
