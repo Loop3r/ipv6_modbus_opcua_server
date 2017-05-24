@@ -125,9 +125,9 @@ int Parse_Config_File(){
     Get_Config_String("IMOC.conf", "ALL", "timeout", timeout);
     Get_Config_String("IMOC.conf", "ALL", "delay", delay);
 
-    DEVICE_NUM = atoi(devnum);
-    TIMEOUT = atoi(timeout);
-    DELAY = atoi(delay);
+    DEVICE_NUM = (uint8_t)atoi(devnum);
+    TIMEOUT = (uint8_t)atoi(timeout);
+    DELAY = (uint8_t)atoi(delay);
 
 }
 

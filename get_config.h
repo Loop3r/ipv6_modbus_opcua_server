@@ -11,12 +11,13 @@
 #include <assert.h>
 #include <errno.h>
 #include <ctype.h>
+#include <stdint.h>
 
 #define KEYVALLEN 100
 
-extern int DEVICE_NUM;
-extern int TIMEOUT;
-extern int DELAY;
+extern uint8_t DEVICE_NUM;
+extern uint8_t TIMEOUT;
+extern uint8_t DELAY;
 
 
 char * l_trim(char * szOutput, const char *szInput);

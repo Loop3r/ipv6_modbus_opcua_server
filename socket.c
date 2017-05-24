@@ -10,9 +10,9 @@
 int server_socket = -1;
 int IPv6_Client_SocketFd = -1;
 
-int DEVICE_NUM = 0;
-int TIMEOUT = 0;
-int DELAY = 0;
+uint8_t DEVICE_NUM = 0;
+uint8_t TIMEOUT = 0;
+uint8_t DELAY = 0;
 
 UA_Boolean running = true;
 UA_Server *server;
@@ -182,6 +182,7 @@ void *Modbus_Server(void *arg)
 
 void *IPv6_Client(void *arg)
 {
+    Parse_Config_File();
     struct sockaddr_in clientAddr;
     int ret;
     uint8_t IPv6_Req[4] = {0xA1, 0xA2, 0x01, 0x00};
@@ -228,6 +229,7 @@ void *IPv6_Client(void *arg)
             {
                 Parse_IPv6_Resp(IPv6_Resp, recvd);
             }
+            usleep((useconds_t)(DELAY*1000));
 
 #if 0
             ret = select(IPv6_Client_SocketFd + 1, &rset, NULL, NULL, &timeout);
@@ -246,7 +248,6 @@ void *IPv6_Client(void *arg)
                     }
             }
 #endif
-            //sleep(1);
         }
     }
 }

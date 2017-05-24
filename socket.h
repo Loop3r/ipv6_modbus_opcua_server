@@ -21,9 +21,9 @@
 #include <errno.h>
 #include <signal.h>
 
-
 #include <modbus/modbus.h>
 #include "open62541.h"
+#include "get_config.h"
 
 #define IOT_DAEMON_PORT     5222
 #define MODBUS_SERVER_PORT   2225
