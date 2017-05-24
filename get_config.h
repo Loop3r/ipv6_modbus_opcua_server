@@ -15,9 +15,9 @@
 
 #define KEYVALLEN 100
 
-extern uint8_t DEVICE_NUM;
-extern uint8_t TIMEOUT;
-extern uint8_t DELAY;
+extern uint16_t DEVICE_NUM;
+extern uint16_t TIMEOUT;
+extern uint16_t DELAY;
 
 
 char * l_trim(char * szOutput, const char *szInput);

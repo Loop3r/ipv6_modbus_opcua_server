@@ -49,7 +49,7 @@
 #define NB_CONNECTION        5
 #define IPV6_RESP_LEN        100
 
-#define REGISTER_WRITE_HEAD   ((buf[5]-1)*30)
+#define REGISTER_WRITE_HEAD   ((buf[4]-1)*20)
 
 
 void close_sigint(int dummy);

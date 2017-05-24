@@ -130,12 +130,11 @@ int Parse_Config_File(){
     if(-1 == Get_Config_String("IMOC.conf", "ALL", "delay", delay)){
         exit(EXIT_FAILURE);
     }
-
-    DEVICE_NUM = (uint8_t)atoi(devnum);
-    TIMEOUT = (uint8_t)atoi(timeout);
-    DELAY = (uint8_t)atoi(delay);
-    printf("device number:%d, timeout:%dms, delay:%dms", DEVICE_NUM, TIMEOUT, DELAY);
-
+    //printf("%s,%s,%s\n", devnum, timeout, delay);
+    DEVICE_NUM = (uint16_t)atoi(devnum);
+    TIMEOUT = (uint16_t)atoi(timeout);
+    DELAY = (uint16_t)atoi(delay);
+    printf("device number:%d, timeout:%dms, delay:%dms\n", DEVICE_NUM, TIMEOUT, DELAY);
 }
 
 

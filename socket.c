@@ -10,9 +10,9 @@
 int server_socket = -1;
 int IPv6_Client_SocketFd = -1;
 
-uint8_t DEVICE_NUM = 0;
-uint8_t TIMEOUT = 0;
-uint8_t DELAY = 0;
+uint16_t DEVICE_NUM = 0;
+uint16_t TIMEOUT = 0;
+uint16_t DELAY = 0;
 
 UA_Boolean running = true;
 UA_Server *server;
