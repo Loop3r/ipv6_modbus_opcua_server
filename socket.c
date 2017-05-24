@@ -5,9 +5,14 @@
 #include "socket.h"
 #include "modbus_data.h"
 #include "open62541.h"
+#include "get_config.h"
 
 int server_socket = -1;
 int IPv6_Client_SocketFd = -1;
+
+int DEVICE_NUM = 0;
+int TIMEOUT = 0;
+int DELAY = 0;
 
 UA_Boolean running = true;
 UA_Server *server;
@@ -183,7 +188,7 @@ void *IPv6_Client(void *arg)
     uint8_t IPv6_Resp[100];
 
     struct timeval timeout;
-    timeout.tv_sec = 1;
+    timeout.tv_sec = TIMEOUT;
     timeout.tv_usec = 0;
 
     fd_set rset;
@@ -209,7 +214,7 @@ void *IPv6_Client(void *arg)
 
     while(1)
     {
-        for(int i=1; i<=IPV6_DEVICE_NUM; i++){
+        for(int i=1; i<=DEVICE_NUM; i++){
             IPv6_Req[3] = (uint8_t)i;
             if (-1 == send(IPv6_Client_SocketFd, IPv6_Req, 4, 0)) {
                 perror("ipv6 client write");
@@ -218,7 +223,6 @@ void *IPv6_Client(void *arg)
             if(recvd==-1&&errno==EAGAIN)
             {
                 printf("timeout\n");
-                break;
             }
             else
             {
