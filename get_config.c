@@ -134,7 +134,7 @@ int Parse_Config_File(){
     DEVICE_NUM = (uint8_t)atoi(devnum);
     TIMEOUT = (uint8_t)atoi(timeout);
     DELAY = (uint8_t)atoi(delay);
-    printf("device number:%d, timeout:%d, delay:%d", DEVICE_NUM, TIMEOUT, DELAY);
+    printf("device number:%d, timeout:%dms, delay:%dms", DEVICE_NUM, TIMEOUT, DELAY);
 
 }
 
