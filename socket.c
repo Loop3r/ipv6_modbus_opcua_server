@@ -189,8 +189,8 @@ void *IPv6_Client(void *arg)
     uint8_t IPv6_Resp[100];
 
     struct timeval timeout;
-    timeout.tv_sec = TIMEOUT;
-    timeout.tv_usec = 0;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = TIMEOUT*1000;
 
     fd_set rset;
     FD_ZERO(&rset);
