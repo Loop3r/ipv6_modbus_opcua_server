@@ -22063,11 +22063,11 @@ void Logger_Stdout(UA_LogLevel level, UA_LogCategory category, const char *msg, 
 /*********************************** amalgamated original file "/home/champer/Desktop/open62541/plugins/ua_config_standard.c" ***********************************/
 
 
-#define MANUFACTURER_NAME "open62541.org"
-#define PRODUCT_NAME "open62541 OPC UA Server"
-#define PRODUCT_URI "urn:unconfigured:open62541"
-#define APPLICATION_NAME "open62541-based OPC UA Application"
-#define APPLICATION_URI "urn:unconfigured:application"
+#define MANUFACTURER_NAME "www.cqupt.edu.cn"
+#define PRODUCT_NAME "OPC UA Server"
+#define PRODUCT_URI "urn:6LoWPAN_based:OPCUASev"
+#define APPLICATION_NAME "CQUPT 6LoWPAN based OPC UA Application"
+#define APPLICATION_URI "urn:6LoWPAN_based:application"
 
 #define UA_STRING_STATIC(s) {sizeof(s)-1, (UA_Byte*)s}
 #define UA_STRING_STATIC_NULL {0, NULL}

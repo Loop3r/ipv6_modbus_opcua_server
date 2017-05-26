@@ -786,7 +786,10 @@ void *Opcua_Server(void * arg)
     server = UA_Server_new(config);
 
     /* run the server loop */
-    UA_StatusCode retval = UA_Server_run(server, &running);
+    //UA_StatusCode retval = UA_Server_run(server, &running);
+    while(1) {
+        UA_Server_run(server, &running);
+    }
     UA_Server_delete(server);
     nl.deleteMembers(&nl);
 
